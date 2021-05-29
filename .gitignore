@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 R_Assignment.Rproj
+diabimmune_16s_t1d_metadata.csv
+diabimmune_t1d_16s_otu_table.txt
