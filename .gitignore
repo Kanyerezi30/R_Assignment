@@ -5,3 +5,8 @@
 R_Assignment.Rproj
 diabimmune_16s_t1d_metadata.csv
 diabimmune_t1d_16s_otu_table.txt
+diabimmune_biom.biom
+new_taxa_table
+otu_names
+otu_table
+taxa_table
