@@ -181,11 +181,23 @@ TAX <- tax_table(taxat_mat_sub)
 samp_data <- column_to_rownames(sample_metadata, var="Sample_ID")
 samp_data <- sample_data(samp_data)
 physeq <- phyloseq(OTU, TAX, samp_data)
-
+physeq
 ```
 
 # Question 3
 Generate Alpha diversity plots and ordination plots. Examine any observed patterns by delivery mode, gender and disease status.
+
+## Alpha diversity comparing the gender in cases and controls
+
+```{r subrt, echo=TRUE, cache=TRUE}
+plot_richness(physeq = physeq, x = "Case_Control", color = "Gender")
+```
+
+## Alpha diversity comparing the delivery routes in cases and controls
+
+```{r subrttt, echo=TRUE, cache=TRUE}
+plot_richness(physeq = physeq, x = "Case_Control", color = "Delivery_Route")
+```
 
 # Question 4
 Perform differential abundance using DEseq2 
