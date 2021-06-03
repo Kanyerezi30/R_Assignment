@@ -199,5 +199,8 @@ plot_richness(physeq = physeq, x = "Case_Control", color = "Gender")
 plot_richness(physeq = physeq, x = "Case_Control", color = "Delivery_Route")
 ```
 
+
+
+
 # Question 4
 Perform differential abundance using DEseq2 
