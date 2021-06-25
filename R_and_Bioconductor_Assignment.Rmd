@@ -174,7 +174,7 @@ new_naam <- gsub(";", "", mat_names) # remove ; from the mat_names and store the
 row.names(taxat_mat_sub) <- new_naam # now change the row names of taxat_mat_sub to the names in "new_naam
 
 library(phyloseq)
-OTU <- otu_table(otut_mat, taxa_are_rows = TRUE)
+# OTU <- otu_table(otut_mat, taxa_are_rows = TRUE)
 TAX <- tax_table(taxat_mat_sub)
 #OTU
 #TAX
@@ -204,3 +204,39 @@ plot_richness(physeq = physeq, x = "Case_Control", color = "Delivery_Route")
 
 # Question 4
 Perform differential abundance using DEseq2 
+```{r deseq, echo=TRUE}
+library(DESeq2)
+diagdds = phyloseq_to_deseq2(physeq, ~ Case_Control)
+# calculate geometric means prior to estimate size factors
+gm_mean = function(x, na.rm=TRUE){
+  exp(sum(log(x[x > 0]), na.rm=na.rm) / length(x))
+}
+geoMeans = apply(counts(diagdds), 1, gm_mean)
+diagdds = estimateSizeFactors(diagdds, geoMeans = geoMeans)
+diagdds = DESeq(diagdds, fitType="local")
+
+res = results(diagdds, cooksCutoff = FALSE)
+alpha = 0.01
+sigtab = res[which(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(physeq)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+
+# library("ggplot2")
+theme_set(theme_bw())
+scale_fill_discrete <- function(palname = "Set1", ...) {
+    scale_fill_brewer(palette = palname, ...)
+}
+# Phylum order
+x = tapply(sigtab$log2FoldChange, sigtab$Phylum, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Phylum = factor(as.character(sigtab$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtab$log2FoldChange, sigtab$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Genus = factor(as.character(sigtab$Genus), levels=names(x))
+ggplot(sigtab, aes(x=Genus, y=log2FoldChange, color=Phylum)) + geom_point(size=6) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
+
+
+
+```
